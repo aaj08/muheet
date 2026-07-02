@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محيط — رؤية مالية واحدة عبر Open Banking</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3ClinearGradient id='r' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%233B9CC4'/%3E%3Cstop offset='1' stop-color='%23155A73'/%3E%3C/linearGradient%3E%3ClinearGradient id='w1' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%233FB6D9'/%3E%3Cstop offset='1' stop-color='%232FE0C0'/%3E%3C/linearGradient%3E%3ClinearGradient id='w2' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%231F87A8'/%3E%3Cstop offset='1' stop-color='%2319C79E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='100' cy='100' r='91' fill='%23E9F4FB' stroke='%23155A73' stroke-width='7'/%3E%3Cpolygon points='100,54 137,104 63,104' fill='url(%23r)'/%3E%3Crect x='66' y='103' width='68' height='11' rx='1.5' fill='%2312566C'/%3E%3Crect x='73' y='117' width='10' height='42' rx='3' fill='%23175E78'/%3E%3Crect x='87' y='117' width='10' height='42' rx='3' fill='%232C8CB2'/%3E%3Crect x='101' y='117' width='10' height='42' rx='3' fill='%236FCBEA'/%3E%3Crect x='115' y='117' width='10' height='42' rx='3' fill='%232A7D9C'/%3E%3Crect x='129' y='117' width='10' height='42' rx='3' fill='%23124F66'/%3E%3Cpath d='M40 148 C 60 138, 80 138, 100 148 C 120 158, 140 158, 160 148' fill='none' stroke='url(%23w1)' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M40 166 C 60 156, 80 156, 100 166 C 120 176, 140 176, 160 166' fill='none' stroke='url(%23w2)' stroke-width='8' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink-900:#0B0F1A;
+    --ink-800:#121929;
+    --ink-700:#1B2438;
+    --ink-600:#28324A;
+    --line:#2C3550;
+    --gold-500:#C9A227;
+    --gold-400:#E3C158;
+    --mint-400:#5EEAD4;
+    --mint-600:#1FA98A;
+    --coral-500:#FF6F61;
+    --paper-100:#F4F1EA;
+    --paper-300:#A9A79C;
+    --paper-500:#76746A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--ink-900);
+    color:var(--paper-100);
+    font-family:'IBM Plex Sans Arabic',sans-serif;
+    font-weight:400;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'El Messiri',serif;font-weight:700;}
+  .num{font-family:'IBM Plex Mono','IBM Plex Sans Arabic',monospace;}
+  ::selection{background:var(--gold-500);color:var(--ink-900);}
+  button{font-family:inherit;cursor:pointer;}
+  a{color:inherit;}
+
+  /* ---------- UPLOAD / LANDING SCREEN ---------- */
+  #upload-screen{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:48px 24px;
+    position:relative;
+    text-align:center;
+  }
+  .brand-row{display:flex;align-items:center;gap:12px;margin-bottom:36px;}
+  .brand-mark{
+    width:38px;height:38px;flex:none;display:flex;align-items:center;justify-content:center;
+  }
+  .brand-mark svg{width:100%;height:100%;display:block;}
+  .brand-name{font-family:'El Messiri',serif;font-weight:700;font-size:22px;letter-spacing:.5px;}
+  #upload-screen h1{font-size:38px;line-height:1.35;max-width:680px;margin-bottom:14px;}
+  #upload-screen h1 span{color:var(--gold-400);}
+  #upload-screen .sub{color:var(--paper-300);font-size:16px;max-width:520px;margin-bottom:44px;line-height:1.8;}
+
+  .dropzone{
+    width:100%;max-width:560px;
+    border:1.5px dashed var(--line);
+    border-radius:18px;
+    padding:36px 28px;
+    background:var(--ink-800);
+    margin-bottom:28px;
+  }
+  .dropzone .icon-doc{width:46px;height:46px;margin:0 auto 14px;display:block;}
+  .dropzone p{color:var(--paper-300);font-size:14px;margin-bottom:18px;}
+  .demo-banks{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .bank-btn{
+    background:var(--ink-700);
+    border:1px solid var(--line);
+    color:var(--paper-100);
+    border-radius:10px;
+    padding:11px 18px;
+    font-size:14px;
+    display:flex;align-items:center;gap:8px;
+    transition:border-color .15s, transform .1s;
+  }
+  .bank-btn:hover{border-color:var(--gold-500);}
+  .bank-btn:active{transform:scale(.97);}
+  .bank-dot{width:9px;height:9px;border-radius:50%;flex:none;}
+  .bank-btn.added{opacity:.45;pointer-events:none;}
+
+  .upload-hint{color:var(--paper-500);font-size:12.5px;margin-top:20px;}
+  #enter-app{
+    margin-top:30px;background:transparent;border:1px solid var(--line);
+    color:var(--paper-300);padding:10px 20px;border-radius:10px;font-size:13px;
+    display:none;
+  }
+  #enter-app.show{display:inline-flex;align-items:center;gap:8px;}
+
+  /* ---------- SCAN OVERLAY ---------- */
+  #scan-overlay{
+    position:fixed;inset:0;background:rgba(11,15,26,.92);
+    display:none;align-items:center;justify-content:center;z-index:200;
+    backdrop-filter:blur(2px);
+  }
+  #scan-overlay.show{display:flex;}
+  .scan-card{
+    width:340px;background:var(--ink-800);border:1px solid var(--line);
+    border-radius:18px;padding:30px 26px;text-align:center;
+  }
+  .scan-doc{
+    width:140px;height:170px;margin:0 auto 22px;
+    background:var(--ink-700);border:1px solid var(--line);border-radius:8px;
+    position:relative;overflow:hidden;padding:18px 14px;
+  }
+  .scan-doc .ln{height:5px;background:var(--ink-600);border-radius:3px;margin-bottom:10px;}
+  .scan-doc .ln:nth-child(2){width:70%;}
+  .scan-doc .ln:nth-child(3){width:85%;}
+  .scan-doc .ln:nth-child(4){width:55%;}
+  .scan-doc .ln:nth-child(5){width:75%;}
+  .scan-doc .ln:nth-child(6){width:40%;}
+  .scan-sweep{
+    position:absolute;left:0;right:0;height:2px;
+    background:var(--mint-400);box-shadow:0 0 10px 1px var(--mint-400);
+    top:0;animation:sweep 1.6s ease-in-out infinite;
+  }
+  @keyframes sweep{0%{top:0;}50%{top:96%;}100%{top:0;}}
+  .scan-status{font-size:13.5px;color:var(--paper-300);min-height:20px;margin-bottom:14px;}
+  .scan-chips{display:flex;flex-direction:column;gap:8px;align-items:stretch;}
+  .scan-chip{
+    background:var(--ink-700);border:1px solid var(--line);border-radius:8px;
+    padding:8px 12px;font-size:12.5px;display:flex;justify-content:space-between;
+    opacity:0;transform:translateY(6px);animation:chipin .4s forwards;
+  }
+  @keyframes chipin{to{opacity:1;transform:translateY(0);}}
+  .scan-chip b{color:var(--gold-400);font-weight:500;}
+
+  /* ---------- APP SHELL ---------- */
+  #app{display:none;min-height:100vh;}
+  #app.show{display:flex;}
+  #sidebar{
+    width:230px;flex:none;background:var(--ink-800);
+    border-left:1px solid var(--line);
+    padding:24px 16px;display:flex;flex-direction:column;
+  }
+  #sidebar .brand-row{margin-bottom:30px;justify-content:flex-start;}
+  .nav-item{
+    display:flex;align-items:center;gap:10px;
+    padding:11px 12px;border-radius:9px;color:var(--paper-300);
+    font-size:14px;margin-bottom:4px;background:transparent;border:none;width:100%;
+    text-align:right;
+  }
+  .nav-item .dot{width:6px;height:6px;border-radius:50%;background:var(--line);flex:none;}
+  .nav-item.active{background:var(--ink-700);color:var(--paper-100);}
+  .nav-item.active .dot{background:var(--gold-500);}
+  .nav-item:hover:not(.active){background:var(--ink-700);}
+  #add-statement-btn{
+    margin-top:auto;background:var(--gold-500);color:var(--ink-900);
+    border:none;border-radius:10px;padding:12px;font-size:13.5px;font-weight:500;
+  }
+  #main{flex:1;padding:30px 36px;max-width:980px;}
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;}
+  .topbar h2{font-size:24px;}
+  .topbar p{color:var(--paper-300);font-size:13.5px;margin-top:4px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  /* metric cards */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  .metric-card{background:var(--ink-800);border:1px solid var(--line);border-radius:14px;padding:16px 18px;}
+  .metric-card .label{font-size:12px;color:var(--paper-300);margin-bottom:8px;}
+  .metric-card .value{font-size:22px;font-family:'IBM Plex Mono',monospace;}
+  .metric-card .value.mint{color:var(--mint-400);}
+  .metric-card .value.coral{color:var(--coral-500);}
+
+  .banner{
+    background:linear-gradient(90deg,var(--mint-600),#137a63);
+    border-radius:14px;padding:18px 22px;display:flex;justify-content:space-between;
+    align-items:center;margin-bottom:24px;color:#06241D;
+  }
+  .banner .t{font-weight:600;font-size:15px;margin-bottom:4px;}
+  .banner .s{font-size:13px;opacity:.85;}
+  .banner button{background:#06241D;color:var(--mint-400);border:none;border-radius:8px;padding:9px 16px;font-size:13px;}
+
+  .card{background:var(--ink-800);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:18px;}
+  .card h3{font-size:15px;margin-bottom:14px;}
+
+  .wallets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+  .wallet-card{background:var(--ink-800);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;transition:border-color .15s;}
+  .wallet-card:hover{border-color:var(--gold-500);}
+  .wallet-card .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+  .wallet-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;}
+  .wallet-card .bal{font-size:21px;font-family:'IBM Plex Mono',monospace;margin-bottom:4px;}
+  .wallet-card .meta{font-size:12px;color:var(--paper-300);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{text-align:right;color:var(--paper-300);font-weight:400;font-size:12px;padding:8px 6px;border-bottom:1px solid var(--line);}
+  td{padding:10px 6px;border-bottom:1px solid var(--ink-700);}
+  .badge{font-size:11px;padding:3px 9px;border-radius:20px;display:inline-block;}
+  .badge.warn{background:rgba(255,111,97,.15);color:var(--coral-500);}
+  .badge.ok{background:rgba(94,234,212,.12);color:var(--mint-400);}
+  .mini-btn{background:transparent;border:1px solid var(--line);color:var(--paper-100);border-radius:7px;padding:6px 12px;font-size:12px;}
+  .mini-btn:hover{border-color:var(--coral-500);color:var(--coral-500);}
+  .mini-btn[disabled]{opacity:.35;pointer-events:none;}
+
+  .bars{display:flex;flex-direction:column;gap:12px;}
+  .bar-row{display:grid;grid-template-columns:110px 1fr 80px;align-items:center;gap:10px;font-size:13px;}
+  .bar-track{height:9px;background:var(--ink-700);border-radius:5px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:5px;}
+
+  /* ---------- ASSISTANT ---------- */
+  #chat-window{height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:6px 4px 14px;}
+  .msg{max-width:75%;padding:11px 15px;border-radius:14px;font-size:13.5px;line-height:1.85;}
+  .msg.bot{background:var(--ink-700);align-self:flex-start;border-bottom-right-radius:4px;}
+  .msg.user{background:var(--gold-500);color:var(--ink-900);align-self:flex-end;border-bottom-left-radius:4px;}
+  .chips-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+  .sugg-chip{background:var(--ink-700);border:1px solid var(--line);border-radius:20px;padding:8px 14px;font-size:12.5px;color:var(--paper-300);}
+  .sugg-chip:hover{border-color:var(--gold-500);color:var(--paper-100);}
+  .chat-input-row{display:flex;gap:10px;border-top:1px solid var(--line);padding-top:14px;}
+  #chat-input{flex:1;background:var(--ink-700);border:1px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--paper-100);font-size:13.5px;}
+  #chat-send{background:var(--gold-500);color:var(--ink-900);border:none;border-radius:10px;padding:0 18px;font-weight:500;font-size:13px;}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink-700);border:1px solid var(--gold-500);color:var(--paper-100);
+    padding:12px 22px;border-radius:10px;font-size:13.5px;opacity:0;transition:.25s;z-index:300;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media(max-width:760px){
+    #app.show{flex-direction:column;}
+    #sidebar{width:100%;flex-direction:row;overflow-x:auto;border-left:none;border-bottom:1px solid var(--line);padding:14px;}
+    #sidebar .brand-row{display:none;}
+    #add-statement-btn{margin-top:0;}
+    .metrics{grid-template-columns:repeat(2,1fr);}
+    #main{padding:20px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== LOGO SPRITE (محيط) ===================== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="mh-roof" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3B9CC4"/>
+      <stop offset="1" stop-color="#155A73"/>
+    </linearGradient>
+    <linearGradient id="mh-wave1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3FB6D9"/>
+      <stop offset="1" stop-color="#2FE0C0"/>
+    </linearGradient>
+    <linearGradient id="mh-wave2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1F87A8"/>
+      <stop offset="1" stop-color="#19C79E"/>
+    </linearGradient>
+    <symbol id="mh-logo" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="91" fill="#E9F4FB" stroke="#155A73" stroke-width="7"/>
+      <polygon points="100,54 137,104 63,104" fill="url(#mh-roof)"/>
+      <rect x="66" y="103" width="68" height="11" rx="1.5" fill="#12566C"/>
+      <rect x="73"  y="117" width="10" height="42" rx="3" fill="#175E78"/>
+      <rect x="87"  y="117" width="10" height="42" rx="3" fill="#2C8CB2"/>
+      <rect x="101" y="117" width="10" height="42" rx="3" fill="#6FCBEA"/>
+      <rect x="115" y="117" width="10" height="42" rx="3" fill="#2A7D9C"/>
+      <rect x="129" y="117" width="10" height="42" rx="3" fill="#124F66"/>
+      <path d="M40 148 C 60 138, 80 138, 100 148 C 120 158, 140 158, 160 148"
+            fill="none" stroke="url(#mh-wave1)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M40 166 C 60 156, 80 156, 100 166 C 120 176, 140 176, 160 166"
+            fill="none" stroke="url(#mh-wave2)" stroke-width="8" stroke-linecap="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ===================== UPLOAD SCREEN ===================== -->
+<div id="upload-screen">
+  <div class="brand-row">
+    <div class="brand-mark"><svg viewBox="0 0 200 200"><use href="#mh-logo"/></svg></div>
+    <div class="brand-name">محيط</div>
+  </div>
+  <h1>رؤية مالية واحدة <span>لكل حساباتك</span></h1>
+  <p class="sub">اربط حساباتك البنكية بضغطة واحدة عبر Open Banking، وخلّي الذكاء الاصطناعي ينظمها في محافظ ويلقطلك كل ريال يتسرب منك بصمت — بدون رفع أي كشف حساب يدويًا.</p>
+
+  <div class="dropzone">
+    <svg class="icon-doc" viewBox="0 0 24 24" fill="none" stroke="#C9A227" stroke-width="1.4"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6M9 9h1"/></svg>
+    <p>اختر بنكك لمحاكاة الربط الفوري والآمن عبر Open Banking</p>
+    <div class="demo-banks" id="demo-banks"></div>
+  </div>
+
+  <p class="upload-hint">هذا نموذج أولي — الربط والبيانات تجريبية بالكامل لأغراض العرض، ولا يتم الاتصال الفعلي بأي بنك.</p>
+  <button id="enter-app">الدخول إلى لوحة التحكم ←</button>
+</div>
+
+<!-- ===================== SCAN OVERLAY ===================== -->
+<div id="scan-overlay">
+  <div class="scan-card">
+    <div class="scan-doc">
+      <div class="ln" style="width:50%"></div>
+      <div class="ln"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div>
+      <div class="scan-sweep"></div>
+    </div>
+    <div class="scan-status" id="scan-status">جارٍ الاتصال الآمن بالبنك عبر Open Banking…</div>
+    <div class="scan-chips" id="scan-chips"></div>
+  </div>
+</div>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app">
+  <div id="sidebar">
+    <div class="brand-row"><div class="brand-mark"><svg viewBox="0 0 200 200"><use href="#mh-logo"/></svg></div><div class="brand-name">محيط</div></div>
+    <button class="nav-item active" data-panel="dashboard"><span class="dot"></span>لوحة التحكم</button>
+    <button class="nav-item" data-panel="wallets"><span class="dot"></span>المحافظ</button>
+    <button class="nav-item" data-panel="analysis"><span class="dot"></span>تحليل الإنفاق</button>
+    <button class="nav-item" data-panel="subs"><span class="dot"></span>الاشتراكات</button>
+    <button class="nav-item" data-panel="assistant"><span class="dot"></span>المساعد الذكي</button>
+    <button id="add-statement-btn">+ اربط حساب جديد</button>
+  </div>
+
+  <div id="main">
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="topbar"><div><h2>لوحة التحكم</h2><p id="dash-sub">نظرة عامة على وضعك المالي عبر كل محافظك</p></div></div>
+      <div class="metrics" id="metrics"></div>
+      <div class="banner" id="savings-banner">
+        <div><div class="t">حوّل توفيرك المحتمل إلى حساب الإنماء التوفيري</div><div class="s" id="banner-sub">رصّد <span class="num">0</span> ر.س قابلة للتوفير هذا الشهر من اشتراكات غير مستخدمة</div></div>
+        <button id="banner-btn">حوّل الآن</button>
+      </div>
+      <div class="card">
+        <h3>أكثر الجهات استنزافًا لرصيدك هذا الشهر</h3>
+        <table><thead><tr><th>الجهة</th><th>عدد العمليات</th><th>الإجمالي</th></tr></thead><tbody id="top-drains"></tbody></table>
+      </div>
+    </div>
+
+    <!-- WALLETS -->
+    <div class="panel" id="panel-wallets">
+      <div class="topbar"><div><h2>المحافظ</h2><p>كل بنك يفتح محفظته الخاصة تلقائيًا فور ربطه عبر Open Banking</p></div></div>
+      <div class="wallets-grid" id="wallets-grid"></div>
+      <div class="card" id="wallet-tx-card" style="display:none;margin-top:18px;">
+        <h3 id="wallet-tx-title">حركات المحفظة</h3>
+        <table><thead><tr><th>التاريخ</th><th>الجهة</th><th>الفئة</th><th>المبلغ</th></tr></thead><tbody id="wallet-tx-body"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ANALYSIS -->
+    <div class="panel" id="panel-analysis">
+      <div class="topbar"><div><h2>تحليل الإنفاق</h2><p>توزيع مصاريفك حسب الفئة عبر كل المحافظ مجتمعة</p></div></div>
+      <div class="card"><h3>الإنفاق حسب الفئة</h3><div class="bars" id="category-bars"></div></div>
+      <div class="card"><h3>ملاحظات الذكاء الاصطناعي</h3><div id="ai-notes" style="font-size:13.5px;line-height:1.9;color:var(--paper-300)"></div></div>
+    </div>
+
+    <!-- SUBSCRIPTIONS -->
+    <div class="panel" id="panel-subs">
+      <div class="topbar"><div><h2>الاشتراكات والدفعات المتكررة</h2><p>كشف تلقائي للاشتراكات، المنسي منها، والمدفوعات المكررة بالخطأ</p></div></div>
+      <div class="card">
+        <h3>الاشتراكات المكتشفة</h3>
+        <table>
+          <thead><tr><th>الاشتراك</th><th>المحفظة</th><th>المبلغ الشهري</th><th>الحالة</th><th>توفير سنوي محتمل</th><th></th></tr></thead>
+          <tbody id="subs-body"></tbody>
+        </table>
+      </div>
+      <div class="card" id="duplicates-card">
+        <h3>دفعات مكررة بالخطأ</h3>
+        <table><thead><tr><th>الجهة</th><th>المحفظة</th><th>عدد المرات</th><th>المبلغ الإضافي</th></tr></thead><tbody id="dup-body"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ASSISTANT -->
+    <div class="panel" id="panel-assistant">
+      <div class="topbar"><div><h2>المساعد المالي الذكي</h2><p>يحلل بياناتك الفعلية المرفوعة ويقترح خطوات عملية</p></div></div>
+      <div class="card">
+        <div class="chips-row" id="sugg-chips"></div>
+        <div id="chat-window"></div>
+        <div class="chat-input-row">
+          <input id="chat-input" type="text" placeholder="اسأل عن وضعك المالي…">
+          <button id="chat-send">إرسال</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------------------------------------------------------
+   DATA: demo bank statements (mock, for prototype purposes only)
+---------------------------------------------------------------- */
+const BANKS = {
+  rajhi:{ name:'مصرف الراجحي', mask:'4821', color:'var(--gold-500)', initials:'ر',
+    opening:8430, period:'1 - 30 يونيو',
+    tx:[
+      {d:'01/06',m:'راتب شهري',c:'دخل',a:12000},
+      {d:'02/06',m:'إيجار الشقة',c:'فواتير وسكن',a:-3200},
+      {d:'03/06',m:'نتفلكس',c:'اشتراكات',a:-45,sub:true,used:true},
+      {d:'04/06',m:'نادي اللياقة - عضوية',c:'اشتراكات',a:-199,sub:true,used:false},
+      {d:'05/06',m:'تخزين سحابي iCloud',c:'اشتراكات',a:-35,sub:true,used:false},
+      {d:'06/06',m:'مطعم البيك',c:'مطاعم وكافيهات',a:-68},
+      {d:'07/06',m:'ستاربكس',c:'مطاعم وكافيهات',a:-34},
+      {d:'08/06',m:'تطبيق توصيل صحي',c:'اشتراكات',a:-150,sub:true,used:false,dup:true},
+      {d:'08/06',m:'تطبيق توصيل صحي',c:'اشتراكات',a:-150,dup:true},
+      {d:'10/06',m:'سحب نقدي - صراف',c:'أخرى',a:-500},
+      {d:'12/06',m:'تحويل لصديق',c:'تحويلات',a:-300},
+      {d:'14/06',m:'فاتورة كهرباء',c:'فواتير وسكن',a:-210},
+      {d:'15/06',m:'فاتورة جوال STC',c:'فواتير وسكن',a:-120},
+      {d:'17/06',m:'تسوق - نمشي',c:'تسوق',a:-650},
+      {d:'19/06',m:'محطة بنزين',c:'مواصلات',a:-180},
+      {d:'21/06',m:'مطعم البيك',c:'مطاعم وكافيهات',a:-71},
+      {d:'24/06',m:'ستاربكس',c:'مطاعم وكافيهات',a:-29},
+      {d:'27/06',m:'تطبيق أوبر',c:'مواصلات',a:-95},
+    ]},
+  ahli:{ name:'البنك الأهلي السعودي', mask:'7765', color:'var(--mint-400)', initials:'أ',
+    opening:15200, period:'1 - 30 يونيو',
+    tx:[
+      {d:'01/06',m:'راتب شهري',c:'دخل',a:9800},
+      {d:'02/06',m:'قسط تمويل سيارة',c:'التزامات',a:-1850},
+      {d:'03/06',m:'شاهد VIP',c:'اشتراكات',a:-39.99,sub:true,used:true},
+      {d:'04/06',m:'Apple Music',c:'اشتراكات',a:-21,sub:true,used:true},
+      {d:'05/06',m:'عضوية نادي صحي آخر',c:'اشتراكات',a:-149,sub:true,used:false},
+      {d:'07/06',m:'فاتورة إنترنت المنزل',c:'فواتير وسكن',a:-199,dup:true},
+      {d:'07/06',m:'فاتورة إنترنت المنزل',c:'فواتير وسكن',a:-199,dup:true},
+      {d:'09/06',m:'مطعم كودو',c:'مطاعم وكافيهات',a:-54},
+      {d:'11/06',m:'تسوق - أمازون',c:'تسوق',a:-410},
+      {d:'13/06',m:'تسوق - نون',c:'تسوق',a:-275},
+      {d:'16/06',m:'صيدلية',c:'صحة',a:-130},
+      {d:'18/06',m:'مطعم نندوز',c:'مطاعم وكافيهات',a:-88},
+      {d:'22/06',m:'كافيه محلي',c:'مطاعم وكافيهات',a:-26},
+      {d:'25/06',m:'تطبيق كريم',c:'مواصلات',a:-60},
+      {d:'28/06',m:'فاتورة جوال موبايلي',c:'فواتير وسكن',a:-110},
+    ]},
+  inma:{ name:'مصرف الإنماء', mask:'2290', color:'var(--coral-500)', initials:'إ',
+    opening:4860, period:'1 - 30 يونيو',
+    tx:[
+      {d:'01/06',m:'راتب جزئي - عمل حر',c:'دخل',a:3200},
+      {d:'02/06',m:'تحويل ادخار شهري',c:'ادخار',a:-1000},
+      {d:'04/06',m:'رسوم بطاقة سنوية',c:'فواتير وسكن',a:-100},
+      {d:'05/06',m:'تطبيق تعليمي - اشتراك',c:'اشتراكات',a:-99,sub:true,used:false},
+      {d:'08/06',m:'مطعم تشيليز',c:'مطاعم وكافيهات',a:-145},
+      {d:'12/06',m:'تسوق - سنتربوينت',c:'تسوق',a:-320},
+      {d:'19/06',m:'محطة بنزين',c:'مواصلات',a:-150},
+      {d:'23/06',m:'كافيه',c:'مطاعم وكافيهات',a:-31},
+    ]},
+};
+
+let state = { wallets:{}, activeWallet:null };
+
+/* ---------------------------------------------------------------
+   UPLOAD SCREEN — build demo bank buttons
+---------------------------------------------------------------- */
+const demoBanksEl = document.getElementById('demo-banks');
+Object.entries(BANKS).forEach(([key,b])=>{
+  const btn=document.createElement('button');
+  btn.className='bank-btn'; btn.id='btn-'+key;
+  btn.innerHTML=`<span class="bank-dot" style="background:${b.color}"></span> ربط ${b.name}`;
+  btn.onclick=()=>startScan(key);
+  demoBanksEl.appendChild(btn);
+});
+
+function startScan(key){
+  const bank = BANKS[key];
+  const overlay = document.getElementById('scan-overlay');
+  const statusEl = document.getElementById('scan-status');
+  const chipsEl = document.getElementById('scan-chips');
+  chipsEl.innerHTML=''; overlay.classList.add('show');
+  const isNew = !state.wallets[key];
+  const steps = isNew ? [
+    {t:600, txt:'جارٍ الاتصال الآمن بالبنك عبر Open Banking…'},
+    {t:1300, txt:'جارٍ المصادقة والحصول على إذنك…'},
+    {t:2000, txt:`تم الربط مع: ${bank.name}`, chip:`البنك <b>${bank.name}</b>`},
+    {t:2500, txt:'جارٍ مزامنة الحركات المصرفية…', chip:`رقم الحساب <b>****${bank.mask}</b>`},
+    {t:3100, txt:'تم إنشاء محفظة جديدة', chip:`عدد الحركات <b>${bank.tx.length}</b>`},
+  ] : [
+    {t:600, txt:'جارٍ الاتصال الآمن بالبنك عبر Open Banking…'},
+    {t:1300, txt:`تم الربط مع: ${bank.name}`, chip:`البنك <b>${bank.name}</b>`},
+    {t:2000, txt:'جارٍ مزامنة الحركات الجديدة مع المحفظة الحالية…', chip:`حركات جديدة <b>${bank.tx.length}</b>`},
+    {t:2600, txt:'تم تحديث المحفظة', chip:`الإجمالي بعد الدمج <b>تم</b>`},
+  ];
+  steps.forEach(s=>{
+    setTimeout(()=>{
+      statusEl.textContent=s.txt;
+      if(s.chip){
+        const c=document.createElement('div');
+        c.className='scan-chip'; c.innerHTML=`<span>${s.chip.split('<b>')[0]}</span><b>${s.chip.split('<b>')[1].replace('</b>','')}</b>`;
+        chipsEl.appendChild(c);
+      }
+    },s.t);
+  });
+  setTimeout(()=>{
+    overlay.classList.remove('show');
+    commitWallet(key);
+  }, steps[steps.length-1].t + 700);
+}
+
+function commitWallet(key){
+  const bank=BANKS[key];
+  if(!state.wallets[key]){
+    state.wallets[key]={ key, name:bank.name, mask:bank.mask, color:bank.color, initials:bank.initials, tx:[...bank.tx], balance:bank.opening };
+    document.getElementById('btn-'+key).classList.add('added');
+    document.getElementById('btn-'+key).innerHTML=`<span class="bank-dot" style="background:${bank.color}"></span> تم ربط ${bank.name} ✓`;
+  } else {
+    state.wallets[key].tx.push(...bank.tx);
+  }
+  state.wallets[key].balance = bank.opening + state.wallets[key].tx.reduce((s,t)=>s+t.a,0);
+  recalcAll();
+  document.getElementById('enter-app').classList.add('show');
+  showToast(`تم ربط/تحديث محفظة ${bank.name} بنجاح`);
+  if(document.getElementById('app').classList.contains('show')){
+    renderWallets(); renderDashboard(); renderAnalysis(); renderSubs();
+  }
+}
+
+document.getElementById('enter-app').onclick=()=>{
+  document.getElementById('upload-screen').style.display='none';
+  document.getElementById('app').classList.add('show');
+  renderDashboard(); renderWallets(); renderAnalysis(); renderSubs(); renderAssistantIntro();
+};
+
+document.getElementById('add-statement-btn').onclick=()=>{
+  document.getElementById('upload-screen').style.display='flex';
+  document.getElementById('app').classList.remove('show');
+};
+
+/* ---------------------------------------------------------------
+   NAV
+---------------------------------------------------------------- */
+document.querySelectorAll('.nav-item').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+btn.dataset.panel).classList.add('active');
+  };
+});
+
+/* ---------------------------------------------------------------
+   AGGREGATION HELPERS
+---------------------------------------------------------------- */
+function allTx(){
+  let out=[];
+  Object.values(state.wallets).forEach(w=> w.tx.forEach(t=> out.push({...t, wallet:w.name, walletKey:w.key, walletColor:w.color})));
+  return out;
+}
+function totalBalance(){
+  return Object.values(state.wallets).reduce((s,w)=> s + w.tx.reduce((a,t)=>a+t.a,0), 0);
+}
+function forgottenSubs(){ return allTx().filter(t=>t.sub && !t.used); }
+function activeSubs(){ return allTx().filter(t=>t.sub && t.used); }
+function duplicates(){
+  const dups = allTx().filter(t=>t.dup);
+  const grouped={};
+  dups.forEach(t=>{
+    const key=t.m+'|'+t.walletKey;
+    grouped[key]=grouped[key]||{m:t.m,wallet:t.wallet,count:0,amount:0};
+    grouped[key].count++; grouped[key].amount+=Math.abs(t.a);
+  });
+  return Object.values(grouped).filter(g=>g.count>1).map(g=>({...g, extra:g.amount/g.count}));
+}
+function monthlySavingsPotential(){ return forgottenSubs().reduce((s,t)=>s+Math.abs(t.a),0); }
+function categoryTotals(){
+  const cats={};
+  allTx().forEach(t=>{ if(t.a<0){ cats[t.c]=(cats[t.c]||0)+Math.abs(t.a); }});
+  return Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+}
+
+function recalcAll(){ /* placeholder for future incremental recompute */ }
+
+/* ---------------------------------------------------------------
+   RENDER: DASHBOARD
+---------------------------------------------------------------- */
+function renderDashboard(){
+  const bal = totalBalance();
+  const savings = monthlySavingsPotential();
+  const subsCount = forgottenSubs().length + activeSubs().length;
+  document.getElementById('metrics').innerHTML = `
+    <div class="metric-card"><div class="label">إجمالي الأرصدة</div><div class="value num">${fmt(bal)} ر.س</div></div>
+    <div class="metric-card"><div class="label">عدد المحافظ</div><div class="value num">${Object.keys(state.wallets).length}</div></div>
+    <div class="metric-card"><div class="label">توفير شهري محتمل</div><div class="value mint num">${fmt(savings)} ر.س</div></div>
+    <div class="metric-card"><div class="label">تنبيهات نشطة</div><div class="value coral num">${forgottenSubs().length + duplicates().length}</div></div>
+  `;
+  document.getElementById('banner-sub').innerHTML = `رصّد <span class="num">${fmt(savings)}</span> ر.س قابلة للتوفير هذا الشهر من اشتراكات غير مستخدمة`;
+
+  const drains = {};
+  allTx().forEach(t=>{ if(t.a<0){ drains[t.m]=drains[t.m]||{count:0,total:0}; drains[t.m].count++; drains[t.m].total+=Math.abs(t.a); }});
+  const top = Object.entries(drains).sort((a,b)=>b[1].total-a[1].total).slice(0,6);
+  document.getElementById('top-drains').innerHTML = top.map(([m,d])=>`
+    <tr><td>${m}</td><td>${d.count}</td><td class="num">${fmt(d.total)} ر.س</td></tr>
+  `).join('') || `<tr><td colspan="3" style="color:var(--paper-300)">اربط حساب بنكي لعرض البيانات</td></tr>`;
+}
+
+document.getElementById('banner-btn').onclick=()=>{
+  showToast(`تم محاكاة تحويل ${fmt(monthlySavingsPotential())} ر.س إلى حساب الإنماء التوفيري`);
+};
+
+/* ---------------------------------------------------------------
+   RENDER: WALLETS
+---------------------------------------------------------------- */
+function renderWallets(){
+  const grid = document.getElementById('wallets-grid');
+  const wallets = Object.values(state.wallets);
+  if(wallets.length===0){
+    grid.innerHTML = `<div class="card" style="grid-column:1/-1;color:var(--paper-300)">لم يتم ربط أي حساب بنكي بعد. استخدم زر "اربط حساب جديد".</div>`;
+    return;
+  }
+  grid.innerHTML = wallets.map(w=>{
+    const bal = w.tx.reduce((s,t)=>s+t.a,0) + (BANKS[w.key].opening);
+    return `
+    <div class="wallet-card" onclick="showWalletTx('${w.key}')">
+      <div class="top">
+        <div class="wallet-icon" style="background:${w.color}22;color:${w.color}">${w.initials}</div>
+        <div class="meta">****${w.mask}</div>
+      </div>
+      <div class="bal">${fmt(bal)} ر.س</div>
+      <div class="meta">${w.name} · ${w.tx.length} حركة</div>
+    </div>`;
+  }).join('');
+}
+function showWalletTx(key){
+  const w = state.wallets[key];
+  document.getElementById('wallet-tx-card').style.display='block';
+  document.getElementById('wallet-tx-title').textContent = `حركات محفظة ${w.name}`;
+  document.getElementById('wallet-tx-body').innerHTML = w.tx.map(t=>`
+    <tr><td>${t.d}</td><td>${t.m}</td><td>${t.c}</td>
+    <td class="num" style="color:${t.a<0?'var(--coral-500)':'var(--mint-400)'}">${t.a<0?'-':'+'}${fmt(Math.abs(t.a))}</td></tr>
+  `).join('');
+  document.getElementById('wallet-tx-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ---------------------------------------------------------------
+   RENDER: ANALYSIS
+---------------------------------------------------------------- */
+function renderAnalysis(){
+  const cats = categoryTotals();
+  const max = cats.length? cats[0][1] : 1;
+  const palette=['var(--gold-500)','var(--mint-400)','var(--coral-500)','#7C9CF2','#C792EA','#76746A'];
+  document.getElementById('category-bars').innerHTML = cats.map(([c,v],i)=>`
+    <div class="bar-row">
+      <div>${c}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/max*100).toFixed(0)}%;background:${palette[i%palette.length]}"></div></div>
+      <div class="num" style="text-align:left">${fmt(v)} ر.س</div>
+    </div>
+  `).join('') || `<div style="color:var(--paper-300)">اربط حساب بنكي لعرض التحليل</div>`;
+
+  const fs = forgottenSubs();
+  const dp = duplicates();
+  let notes=[];
+  if(fs.length) notes.push(`رصدنا <b style="color:var(--coral-500)">${fs.length}</b> اشتراك قد يكون منسيًا، بإجمالي <b style="color:var(--coral-500)">${fmt(fs.reduce((s,t)=>s+Math.abs(t.a),0))} ر.س</b> شهريًا.`);
+  if(dp.length) notes.push(`هناك <b style="color:var(--coral-500)">${dp.length}</b> حالة دفع مكرر بالخطأ لنفس الجهة خلال الشهر.`);
+  if(cats.length) notes.push(`أعلى فئة إنفاق هي <b style="color:var(--gold-400)">${cats[0][0]}</b> بإجمالي ${fmt(cats[0][1])} ر.س.`);
+  document.getElementById('ai-notes').innerHTML = notes.length? notes.map(n=>`<p style="margin-bottom:8px">• ${n}</p>`).join('') : 'اربط حساب بنكي واحد على الأقل لعرض ملاحظات الذكاء الاصطناعي.';
+}
+
+/* ---------------------------------------------------------------
+   RENDER: SUBSCRIPTIONS
+---------------------------------------------------------------- */
+function renderSubs(){
+  const subs = allTx().filter(t=>t.sub);
+  document.getElementById('subs-body').innerHTML = subs.map(t=>`
+    <tr id="sub-row-${t.m.replace(/\\s/g,'')}-${t.walletKey}">
+      <td>${t.m}</td><td>${t.wallet}</td>
+      <td class="num">${fmt(Math.abs(t.a))} ر.س</td>
+      <td>${t.used? '<span class="badge ok">نشط ومستخدم</span>' : '<span class="badge warn">مشتبه به منسي</span>'}</td>
+      <td class="num">${t.used? '—' : fmt(Math.abs(t.a)*12)+' ر.س'}</td>
+      <td>${t.used? '' : `<button class="mini-btn" onclick="cancelSub(this,'${t.m}',${Math.abs(t.a)})">إلغاء (محاكاة)</button>`}</td>
+    </tr>
+  `).join('') || `<tr><td colspan="6" style="color:var(--paper-300)">لا توجد اشتراكات بعد</td></tr>`;
+
+  const dp = duplicates();
+  document.getElementById('dup-body').innerHTML = dp.map(d=>`
+    <tr><td>${d.m}</td><td>${d.wallet}</td><td>${d.count}</td><td class="num" style="color:var(--coral-500)">${fmt(d.extra)} ر.س</td></tr>
+  `).join('') || `<tr><td colspan="4" style="color:var(--paper-300)">لا توجد دفعات مكررة مكتشفة</td></tr>`;
+}
+function cancelSub(btn,name,amount){
+  btn.outerHTML = '<span style="color:var(--mint-400);font-size:12px">تم الإلغاء ✓</span>';
+  showToast(`ألغينا ${name} (محاكاة) — توفير ${fmt(amount*12)} ر.س سنويًا`);
+}
+
+/* ---------------------------------------------------------------
+   RENDER: AI ASSISTANT
+---------------------------------------------------------------- */
+const suggPrompts = ['وين أقدر أوفر أكثر؟','حلل وضعي المالي','وش الاشتراكات المنسية عندي؟','نصيحة لتحسين ادخاري'];
+function renderAssistantIntro(){
+  document.getElementById('sugg-chips').innerHTML = suggPrompts.map(p=>`<button class="sugg-chip" onclick="sendChat('${p}')">${p}</button>`).join('');
+  addMsg('bot', `أهلًا! أنا مساعدك المالي. حللت بيانات ${Object.keys(state.wallets).length} محفظة مرفوعة. اسألني أي شي عن وضعك المالي، أو اختر سؤال جاهز فوق.`);
+}
+document.getElementById('chat-send').onclick=()=>{
+  const v=document.getElementById('chat-input').value.trim();
+  if(v){ sendChat(v); document.getElementById('chat-input').value=''; }
+};
+document.getElementById('chat-input').addEventListener('keydown',e=>{ if(e.key==='Enter'){ document.getElementById('chat-send').click(); }});
+
+function addMsg(who,text){
+  const w=document.getElementById('chat-window');
+  const d=document.createElement('div'); d.className='msg '+who; d.innerHTML=text;
+  w.appendChild(d); w.scrollTop=w.scrollHeight;
+}
+function sendChat(text){
+  addMsg('user', text);
+  setTimeout(()=> addMsg('bot', buildReply(text)), 500);
+}
+function buildReply(q){
+  const fs=forgottenSubs(), savings=monthlySavingsPotential(), cats=categoryTotals(), dp=duplicates();
+  if(Object.keys(state.wallets).length===0){
+    return 'لسا ما ربطت أي حساب بنكي — اربط حساب من الشاشة الرئيسية وبقدر أحلل بياناتك فعليًا.';
+  }
+  if(/اشتراك|منس/.test(q)){
+    if(!fs.length) return 'ما لقيت اشتراكات مشتبه بأنها منسية حاليًا — وضعك تمام من هالناحية 👍';
+    return `لقيت ${fs.length} اشتراك يبدو إنه منسي: ${fs.map(t=>`<b>${t.m}</b> (${fmt(Math.abs(t.a))} ر.س شهريًا)`).join('، ')}. لو ألغيتها كلها بتوفر <b style="color:var(--mint-400)">${fmt(savings*12)} ر.س</b> سنويًا. تقدر تلغيها من تبويب الاشتراكات.`;
+  }
+  if(/وفر|ادخار|توفير/.test(q)){
+    return `أقوى فرصة توفير عندك هي إلغاء الاشتراكات غير المستخدمة (${fmt(savings)} ر.س شهريًا). لو حولت هذا المبلغ شهريًا لحساب ادخار، بعد سنة بيصير عندك تقريبًا <b style="color:var(--mint-400)">${fmt(savings*12)} ر.س</b> إضافية، بدون ما تغيّر أي شي بأسلوب حياتك.`;
+  }
+  if(/حلل|وضع|تحليل/.test(q)){
+    const top = cats[0];
+    return `وضعك المالي: إجمالي أرصدتك ${fmt(totalBalance())} ر.س عبر ${Object.keys(state.wallets).length} محفظة. أعلى فئة صرف هي <b>${top? top[0]:'—'}</b> بـ ${top? fmt(top[1]):0} ر.س. عندك ${fs.length} اشتراك منسي و ${dp.length} حالة دفع مكرر — هذولا أسرع شي تقدر تصلحه الأسبوع هذا.`;
+  }
+  if(/مكرر|تكرار/.test(q)){
+    if(!dp.length) return 'ما لقيت دفعات مكررة بالخطأ — تمام 👍';
+    return `لقيت ${dp.length} حالة دفع مكرر: ${dp.map(d=>`<b>${d.m}</b> (${d.count} مرات)`).join('، ')}. ينصح تتواصل مع البنك أو مزود الخدمة لاسترجاع المبلغ الزائد.`;
+  }
+  return `بناءً على بياناتك، أكبر فرصة تحسين حاليًا هي مراجعة الاشتراكات (${fmt(savings)} ر.س محتملة شهريًا). تقدر تسألني عن "الاشتراكات المنسية" أو "نصيحة للادخار" لتفاصيل أكثر.`;
+}
+
+/* ---------------------------------------------------------------
+   UTIL
+---------------------------------------------------------------- */
+function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+function showToast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+</body>
+</html>
